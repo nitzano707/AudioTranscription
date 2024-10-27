@@ -99,7 +99,7 @@ async function processAudioChunk(chunk, transcriptionData, currentChunk, totalCh
         const response = await fetch('https://api.groq.com/openai/v1/audio/transcriptions', {
             method: 'POST',
             headers: {
-                'Authorization': 'Bearer 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' // יש להחליף במפתח ה-API האישי שלך
+                'Authorization': 'Bearer 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' // יש להחליף במפתח ה-API האישי שלך
             },
             body: formData
         });
