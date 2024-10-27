@@ -28,16 +28,20 @@ button {
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s;
+    margin: 10px 0; /* רווח מעל ומתחת לכפתור */
 }
 
 button:hover {
     background-color: #c0392b;
 }
 
-/* עיצוב כפתור ההורדה */
+/* כפתור ההורדה */
 #downloadBtn {
     display: none;
     margin-top: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    display: block; /* ממרכז את הכפתור */
 }
 
 /* עיצוב תיבת התגובה */
