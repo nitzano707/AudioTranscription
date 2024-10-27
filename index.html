@@ -1,4 +1,4 @@
-
+<!DOCTYPE html>
 <html dir="rtl" lang="he">
 <head>
     <meta charset="UTF-8">
@@ -6,25 +6,17 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div id="apiKeyContainer" style="display: none;">
-        <h2>הזן את קוד ה-API שלך מ-GROQ</h2>
-        <input type="text" id="apiKeyInput" placeholder="הכנס את קוד ה-API כאן">
-        <button onclick="saveApiKey()">שמור קוד API</button>
+    <h1>העלאת קובץ אודיו ותמלול לעברית</h1>
+    <input type="file" id="audioFile" accept="audio/*">
+    <button onclick="uploadAudio()">העלה ותמלל</button>
+    <button onclick="downloadTranscription()" id="downloadBtn" style="display:none;">הורד תמלול כ-TXT</button>
+    
+    <!-- רכיב הצגת התקדמות -->
+    <div class="progress-wrapper">
+        <div id="progressBar">0%</div>
     </div>
 
-    <div id="mainContainer" style="display: none;">
-        <h1>העלאת קובץ אודיו ותמלול לעברית</h1>
-        <input type="file" id="audioFile" accept="audio/*">
-        <button onclick="uploadAudio()">העלה ותמלל</button>
-        <button onclick="downloadTranscription()" id="downloadBtn" style="display:none;">הורד תמלול כ-TXT</button>
-
-        <!-- רכיב הצגת התקדמות -->
-        <div class="progress-wrapper">
-            <div id="progressBar">0%</div>
-        </div>
-
-        <div id="response"></div>
-    </div>
+    <div id="response"></div>
 
     <script src="script.js"></script>
 </body>
