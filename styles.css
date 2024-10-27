@@ -1,4 +1,3 @@
-
 /* עיצוב כללי לדף */
 body {
     font-family: Arial, sans-serif;
@@ -29,7 +28,7 @@ button {
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s;
-    margin: 10px 0; /* רווח מעל ומתחת לכפתור */
+    margin: 10px 0;
 }
 
 button:hover {
@@ -42,10 +41,10 @@ button:hover {
     margin-top: 20px;
     margin-left: auto;
     margin-right: auto;
-    display: block; /* ממרכז את הכפתור */
+    display: block;
 }
 
-/* עיצוב תיבת התגובה */
+/* תיבת תגובה עם גלילה */
 #response {
     margin-top: 20px;
     padding: 15px;
@@ -53,15 +52,13 @@ button:hover {
     border: 1px solid #ddd;
     border-radius: 5px;
     max-width: 600px;
-    max-height: 400px; /* הגדרת גובה מקסימלי */
-    overflow-y: auto; /* גלילה אנכית במקרה שהתוכן חורג מגובה התיבה */
+    max-height: 400px;
+    overflow-y: auto;
     margin-left: auto;
     margin-right: auto;
     text-align: right;
 }
 
-
-/* עיצוב עבור סרגל ההתקדמות */
 .progress-wrapper {
     position: relative;
     width: 100%;
@@ -111,4 +108,3 @@ button:hover {
     color: green;
     display: inline;
 }
-
