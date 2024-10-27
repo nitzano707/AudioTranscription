@@ -127,7 +127,8 @@ async function uploadAudio() {
 
 // פונקציה להורדת התמלול כ-CSV
 function downloadTranscriptionAsCSV(data, fileName) {
-    let csvContent = "חותמת זמן,תמלול\n"; // כותרות העמודות
+    let csvContent = "\uFEFF"; // הוספת BOM כדי להבטיח שהקובץ ייפתח נכון ב-UTF-8
+    csvContent += "חותמת זמן,תמלול\n"; // כותרות העמודות
     
     data.forEach(segment => {
         const startTime = formatTime(segment.start);
@@ -135,13 +136,12 @@ function downloadTranscriptionAsCSV(data, fileName) {
         csvContent += `${startTime},${text}\n`;
     });
     
-    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
     link.download = `${fileName.replace(/\.[^/.]+$/, "")}_transcription.csv`;
     link.click();
 }
-
 // פונקציות עזר להעתקה, הורדה והצגת תמלול
 function copyTranscription() {
     const responseDiv = document.getElementById('response');
