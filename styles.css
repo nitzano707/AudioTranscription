@@ -30,3 +30,39 @@
     font-size: 14px;
     pointer-events: none;
 }
+.progress-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+#progressBar {
+    width: 100%;
+    height: 30px;
+    -webkit-appearance: none;
+    appearance: none;
+    color: white;
+}
+
+#progressBar::-webkit-progress-bar {
+    background-color: #e0e0e0;
+    border-radius: 10px;
+}
+
+#progressBar::-webkit-progress-value {
+    background-color: green;
+    border-radius: 10px;
+}
+
+#progressText {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    text-align: center;
+    color: white;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 30px; /* התאמת גובה הטקסט לגובה הסרגל */
+    pointer-events: none;
+}
