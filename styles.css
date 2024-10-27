@@ -44,7 +44,7 @@ button:hover {
     display: block;
 }
 
-/* תיבת תגובה עם גלילה */
+/* עיצוב תיבת התגובה */
 #response {
     margin-top: 20px;
     padding: 15px;
@@ -52,8 +52,8 @@ button:hover {
     border: 1px solid #ddd;
     border-radius: 5px;
     max-width: 600px;
-    max-height: 400px;
-    overflow-y: auto;
+    max-height: 400px; /* הגדרת גובה מקסימלי */
+    overflow-y: auto; /* גלילה אנכית במקרה שהתוכן חורג מגובה התיבה */
     margin-left: auto;
     margin-right: auto;
     text-align: right;
