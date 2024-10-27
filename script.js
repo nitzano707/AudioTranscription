@@ -1,29 +1,3 @@
-// בדיקה אם קוד ה-API קיים ב-Local Storage והפעלת המסך המתאים
-window.onload = function() {
-    const apiKey = localStorage.getItem('apiKey');
-    if (apiKey) {
-        document.getElementById('mainContainer').style.display = 'block';
-    } else {
-        document.getElementById('apiKeyContainer').style.display = 'block';
-    }
-}
-
-// פונקציה לשמירת קוד ה-API ב-Local Storage
-function saveApiKey() {
-    const apiKeyInput = document.getElementById('apiKeyInput').value;
-    if (apiKeyInput) {
-        localStorage.setItem('apiKey', apiKeyInput);
-        document.getElementById('apiKeyContainer').style.display = 'none';
-        document.getElementById('mainContainer').style.display = 'block';
-    } else {
-        alert("אנא הכנס קוד API תקף.");
-    }
-}
-
-// פונקציה לשליפת קוד ה-API מה-Local Storage
-function getApiKey() {
-    return localStorage.getItem('apiKey');
-}
 
 async function uploadAudio() {
     const responseDiv = document.getElementById('response');
@@ -51,7 +25,7 @@ async function uploadAudio() {
         
         const progressPercent = Math.round(((i + 1) / totalChunks) * 100);
         progressBar.style.width = `${progressPercent}%`;
-        progressBar.textContent = `${progressPercent}%`;
+        progressBar.textContent = `${progressPercent}%`; // הצגת אחוזים בטקסט במרכז החלק הירוק
 
         await processAudioChunk(chunkFile, transcriptionData, i + 1, totalChunks, progressBar);
 
@@ -75,7 +49,7 @@ async function splitAudioToChunksBySize(file, maxChunkSizeBytes) {
 
     const sampleRate = audioBuffer.sampleRate;
     const numChannels = audioBuffer.numberOfChannels;
-    const chunkDuration = maxChunkSizeBytes / (sampleRate * numChannels * 2);
+    const chunkDuration = maxChunkSizeBytes / (sampleRate * numChannels * 2); // חישוב משך כל חלק בנתוני הקובץ
     let currentTime = 0;
     const chunks = [];
 
@@ -160,13 +134,11 @@ async function processAudioChunk(chunk, transcriptionData, currentChunk, totalCh
     formData.append('response_format', 'verbose_json');
     formData.append('language', 'he');
 
-    const apiKey = getApiKey();
-
     try {
         const response = await fetch('https://api.groq.com/openai/v1/audio/transcriptions', {
             method: 'POST',
             headers: {
-                'Authorization': `Bearer ${apiKey}`
+                'Authorization': 'Bearer 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'
             },
             body: formData
         });
@@ -184,9 +156,10 @@ async function processAudioChunk(chunk, transcriptionData, currentChunk, totalCh
 }
 
 function formatTime(seconds) {
+    const ms = Math.floor((seconds % 1) * 10).toString().padStart(1, '0');
     const s = Math.floor(seconds % 60).toString().padStart(2, '0');
     const m = Math.floor((seconds / 60) % 60).toString().padStart(2, '0');
-    return `${m}:${s}`;
+    return `${m}:${s}.${ms}`;
 }
 
 function downloadTranscription(data, fileName) {
