@@ -69,11 +69,12 @@ async function splitAndProcessAudio(file, chunkDuration) {
         const chunkBuffer = audioContext.createBuffer(numChannels, frameCount, sampleRate);
 
         for (let channel = 0; channel < numChannels; channel++) {
-            const channelData = audioBuffer.getChannelData(channel).slice(
-                Math.floor(currentTime * sampleRate),
-                Math.floor(end * sampleRate)
-            );
-            chunkBuffer.copyToChannel(channelData, channel);
+            const originalChannelData = audioBuffer.getChannelData(channel);
+            const chunkChannelData = chunkBuffer.getChannelData(channel);
+            
+            for (let i = 0; i < frameCount; i++) {
+                chunkChannelData[i] = originalChannelData[Math.floor(currentTime * sampleRate) + i];
+            }
         }
 
         const blob = await bufferToBlob(chunkBuffer, file.type);
