@@ -26,21 +26,28 @@ async function saveApiKey() {
     }
 }
 
-// פונקציה לבדוק אם קוד ה-API תקין על ידי בקשת תמלול עם קובץ ריק
 // פונקציה לבדוק אם קוד ה-API תקין על ידי בקשת תמלול עם קובץ אודיו קיים ב-GitHub
 async function checkApiKey(apiKey) {
-    const audioUrl = 'https://github.com/nitzano707/AudioTranscription/blob/main/assets/check_mp3.mp3'; // URL ישיר לקובץ ב-GitHub
-    const response = await fetch(audioUrl);
-    const audioBlob = await response.blob();
+    console.log("בודק את קוד ה-API:", apiKey);
 
-    const formData = new FormData();
-    formData.append('file', audioBlob, 'test-audio.wav');
-    formData.append('model', 'whisper-large-v3-turbo');
-    formData.append('response_format', 'verbose_json');
-    formData.append('language', 'he');
-
+    // URL ישיר לקובץ האודיו ב-GitHub
+    const audioUrl = 'https://raw.githubusercontent.com/username/repo-name/branch-name/path/to/check_mp3.mp3';
+    
     try {
-        const response = await fetch('https://api.groq.com/openai/v1/audio/transcriptions', {
+        const response = await fetch(audioUrl);
+        if (!response.ok) {
+            console.error("שגיאה בהורדת קובץ האודיו לבדיקה:", response.statusText);
+            return false;
+        }
+        
+        const audioBlob = await response.blob();
+        const formData = new FormData();
+        formData.append('file', audioBlob, 'check_mp3.mp3');
+        formData.append('model', 'whisper-large-v3-turbo');
+        formData.append('response_format', 'verbose_json');
+        formData.append('language', 'he');
+
+        const apiResponse = await fetch('https://api.groq.com/openai/v1/audio/transcriptions', {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${apiKey}`
@@ -48,12 +55,19 @@ async function checkApiKey(apiKey) {
             body: formData
         });
 
-        return response.ok; // 200 OK מאשר שה-API תקין
+        if (apiResponse.ok) {
+            console.log("ה-API תקין.");
+            return true;
+        } else {
+            console.error("שגיאה באימות ה-API:", apiResponse.statusText);
+            return false;
+        }
     } catch (error) {
-        console.error("שגיאה ברשת או בקוד ה-API:", error);
+        console.error("שגיאה בלתי צפויה באימות ה-API:", error);
         return false;
     }
 }
+
 
 
 // פונקציה לשליפת קוד ה-API מה-Local Storage
