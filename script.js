@@ -2,23 +2,44 @@
 window.onload = function() {
     const apiKey = localStorage.getItem('apiKey');
     if (apiKey) {
-        // אם קוד ה-API קיים, הצג את המסך הראשי
         document.getElementById('mainContainer').style.display = 'block';
     } else {
-        // אם קוד ה-API לא קיים, הצג את מסך קלט ה-API
         document.getElementById('apiKeyContainer').style.display = 'block';
     }
 }
 
-// פונקציה לשמירת קוד ה-API ב-Local Storage
-function saveApiKey() {
+// פונקציה לשמירת קוד ה-API ב-Local Storage לאחר בדיקה
+async function saveApiKey() {
     const apiKeyInput = document.getElementById('apiKeyInput').value;
     if (apiKeyInput) {
-        localStorage.setItem('apiKey', apiKeyInput);
-        document.getElementById('apiKeyContainer').style.display = 'none';
-        document.getElementById('mainContainer').style.display = 'block';
+        const isValid = await checkApiKey(apiKeyInput);
+        if (isValid) {
+            localStorage.setItem('apiKey', apiKeyInput);
+            document.getElementById('apiKeyContainer').style.display = 'none';
+            document.getElementById('mainContainer').style.display = 'block';
+        } else {
+            alert("קוד ה-API שהוזן אינו תקין או לא פעיל. אנא נסה שוב.");
+        }
     } else {
         alert("אנא הכנס קוד API תקף.");
+    }
+}
+
+// פונקציה לבדוק אם קוד ה-API תקין
+async function checkApiKey(apiKey) {
+    try {
+        const response = await fetch('https://api.groq.com/openai/v1/ping', { // מסלול לדוגמה, החלף לפי תיעוד ה-GROQ
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${apiKey}`
+            }
+        });
+
+        // בדיקה אם הבקשה הצליחה (קוד 200 מצביע על API תקין)
+        return response.ok;
+    } catch (error) {
+        console.error("שגיאה ברשת או בקוד ה-API:", error);
+        return false;
     }
 }
 
