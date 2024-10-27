@@ -30,12 +30,13 @@ async function uploadAudio() {
 
         for (let i = 0; i < totalChunks; i++) {
             const chunkBlob = audioFile.slice(i * chunkSize, (i + 1) * chunkSize, audioFile.type);
+            const chunkFile = new File([chunkBlob], `chunk_${i + 1}.wav`, { type: audioFile.type });
             
             // עדכון חיווי התקדמות
             progressBar.value = (i / totalChunks) * 100;
             progressLabel.textContent = `מעבד חלק ${i + 1} מתוך ${totalChunks}...`;
 
-            await processAudioChunk(chunkBlob, transcriptionData, i + 1, totalChunks, progressLabel, progressBar);
+            await processAudioChunk(chunkFile, transcriptionData, i + 1, totalChunks, progressLabel, progressBar);
 
             // השהייה של חצי שנייה בין הבקשות כדי למנוע עומס
             await new Promise(resolve => setTimeout(resolve, 500));
@@ -56,7 +57,7 @@ async function uploadAudio() {
 
 async function processAudioChunk(chunk, transcriptionData, currentChunk, totalChunks, progressLabel, progressBar) {
     const formData = new FormData();
-    formData.append('file', chunk, 'audio.wav'); // מוודא שהפורמט נשמר כ-WAV
+    formData.append('file', chunk); // נשלח את הקטע כקובץ File עם שם מתאים
 
     formData.append('model', 'whisper-large-v3-turbo');
     formData.append('response_format', 'verbose_json');
