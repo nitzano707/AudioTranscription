@@ -246,3 +246,19 @@ function downloadTranscription(data, fileName) {
     link.download = 'transcription.txt';
     link.click();
 }
+
+function downloadTranscriptionAsCSV(data, fileName) {
+    let csvContent = "חותמת זמן,תמלול\n"; // כותרות העמודות
+    
+    data.forEach(segment => {
+        const startTime = formatTime(segment.start);
+        const text = segment.text.replace(/,/g, ""); // הסרת פסיקים כדי למנוע בעיות בפורמט CSV
+        csvContent += `${startTime},${text}\n`;
+    });
+    
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `${fileName.replace(/\.[^/.]+$/, "")}_transcription.csv`; // שינוי שם הקובץ ל-CSV
+    link.click();
+}
