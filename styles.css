@@ -69,6 +69,7 @@ button:hover {
     color: white;
     border-radius: 10px;
     overflow: hidden;
+    position: relative;
 }
 
 #progressBar::-webkit-progress-bar {
@@ -78,16 +79,20 @@ button:hover {
 #progressBar::-webkit-progress-value {
     background-color: green;
     border-radius: 10px;
+    position: relative;
+    z-index: 1;
 }
 
-/* הצגת אחוזים בקצה סרגל ההתקדמות */
+/* הצגת אחוזים בקצה החלק הירוק של סרגל ההתקדמות */
 #progressText {
     position: absolute;
     top: 0;
-    transform: translateX(-50%); /* התאמת מיקום האחוזים לפי ההתקדמות */
+    left: 0;
+    transform: translateX(10px); /* התאמת מיקום התחלתי */
     color: white;
     font-weight: bold;
     font-size: 14px;
     line-height: 30px; /* התאמת גובה הטקסט לגובה הסרגל */
     pointer-events: none;
+    z-index: 2;
 }
