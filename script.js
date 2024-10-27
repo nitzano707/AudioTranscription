@@ -1,3 +1,31 @@
+// בדיקה אם קוד ה-API קיים ב-Local Storage והפעלת המסך המתאים
+window.onload = function() {
+    const apiKey = localStorage.getItem('apiKey');
+    if (apiKey) {
+        // אם קוד ה-API קיים, הצג את המסך הראשי
+        document.getElementById('mainContainer').style.display = 'block';
+    } else {
+        // אם קוד ה-API לא קיים, הצג את מסך קלט ה-API
+        document.getElementById('apiKeyContainer').style.display = 'block';
+    }
+}
+
+// פונקציה לשמירת קוד ה-API ב-Local Storage
+function saveApiKey() {
+    const apiKeyInput = document.getElementById('apiKeyInput').value;
+    if (apiKeyInput) {
+        localStorage.setItem('apiKey', apiKeyInput);
+        document.getElementById('apiKeyContainer').style.display = 'none';
+        document.getElementById('mainContainer').style.display = 'block';
+    } else {
+        alert("אנא הכנס קוד API תקף.");
+    }
+}
+
+// פונקציה לשליפת קוד ה-API מה-Local Storage
+function getApiKey() {
+    return localStorage.getItem('apiKey');
+}
 
 async function uploadAudio() {
     const responseDiv = document.getElementById('response');
@@ -25,7 +53,7 @@ async function uploadAudio() {
         
         const progressPercent = Math.round(((i + 1) / totalChunks) * 100);
         progressBar.style.width = `${progressPercent}%`;
-        progressBar.textContent = `${progressPercent}%`; // הצגת אחוזים בטקסט במרכז החלק הירוק
+        progressBar.textContent = `${progressPercent}%`;
 
         await processAudioChunk(chunkFile, transcriptionData, i + 1, totalChunks, progressBar);
 
@@ -134,11 +162,13 @@ async function processAudioChunk(chunk, transcriptionData, currentChunk, totalCh
     formData.append('response_format', 'verbose_json');
     formData.append('language', 'he');
 
+    const apiKey = getApiKey(); // שליפת קוד ה-API מה-Local Storage
+
     try {
         const response = await fetch('https://api.groq.com/openai/v1/audio/transcriptions', {
             method: 'POST',
             headers: {
-                'Authorization': 'Bearer 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'
+                'Authorization': `Bearer ${apiKey}`
             },
             body: formData
         });
@@ -156,10 +186,8 @@ async function processAudioChunk(chunk, transcriptionData, currentChunk, totalCh
 }
 
 function formatTime(seconds) {
-    // const ms = Math.floor((seconds % 1) * 10).toString().padStart(1, '0');
     const s = Math.floor(seconds % 60).toString().padStart(2, '0');
     const m = Math.floor((seconds / 60) % 60).toString().padStart(2, '0');
-    // return `${m}:${s}.${ms}`;
     return `${m}:${s}`;
 }
 
