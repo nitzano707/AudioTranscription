@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+    <meta charset="UTF-8">
+    <title>תמלול אודיו לעברית עם GROQ</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>העלאת קובץ אודיו ותמלול לעברית</h1>
+    <input type="file" id="audioFile" accept="audio/*">
+    <button onclick="uploadAudio()">העלה ותמלל</button>
+    <button onclick="downloadTranscription()" id="downloadBtn" style="display:none;">הורד תמלול כ-TXT</button>
+    
+    <!-- רכיב הצגת התקדמות -->
+    <div id="progressContainer" style="display: none;">
+        <label id="progressLabel">מעבד...</label>
+        <progress id="progressBar" value="0" max="100"></progress>
+    </div>
+
+    <div id="response"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
