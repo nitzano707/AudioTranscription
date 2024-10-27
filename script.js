@@ -29,34 +29,40 @@ async function uploadAudio() {
 
     responseDiv.textContent = 'מעבד את הבקשה...';
     downloadBtn.style.display = 'none';
+    document.getElementById('progressSection').style.display = 'block';
 
     const maxChunkSizeMB = 24;
     const maxChunkSizeBytes = maxChunkSizeMB * 1024 * 1024;
     let transcriptionData = [];
 
-    const chunks = await splitAudioToChunksBySize(audioFile, maxChunkSizeBytes);
-    const totalChunks = chunks.length;
+    try {
+        const chunks = await splitAudioToChunksBySize(audioFile, maxChunkSizeBytes);
+        const totalChunks = chunks.length;
 
-    for (let i = 0; i < totalChunks; i++) {
-        const chunkFile = new File([chunks[i]], `chunk_${i + 1}.${audioFile.name.split('.').pop()}`, { type: audioFile.type });
-        
-        const progressPercent = Math.round(((i + 1) / totalChunks) * 100);
-        progressBar.style.width = `${progressPercent}%`;
-        progressBar.textContent = `${progressPercent}%`;
+        for (let i = 0; i < totalChunks; i++) {
+            const chunkFile = new File([chunks[i]], `chunk_${i + 1}.${audioFile.name.split('.').pop()}`, { type: audioFile.type });
+            
+            const progressPercent = Math.round(((i + 1) / totalChunks) * 100);
+            progressBar.style.width = `${progressPercent}%`;
+            progressBar.textContent = `${progressPercent}%`;
 
-        await processAudioChunk(chunkFile, transcriptionData, i + 1, totalChunks, progressBar);
+            await processAudioChunk(chunkFile, transcriptionData, i + 1, totalChunks, progressBar);
 
-        await new Promise(resolve => setTimeout(resolve, 500));
+            await new Promise(resolve => setTimeout(resolve, 500));
+        }
+
+        let htmlContent = '';
+        transcriptionData.forEach(segment => {
+            const startTime = formatTime(segment.start);
+            htmlContent += `<p><strong>${startTime}</strong><br>${segment.text}</p>`;
+        });
+        responseDiv.innerHTML = htmlContent;
+        downloadBtn.style.display = 'block';
+        downloadBtn.onclick = () => downloadTranscription(transcriptionData, audioFile.name);
+    } catch (error) {
+        console.error('Error during audio processing:', error);
+        responseDiv.innerHTML = '<p>אירעה שגיאה במהלך עיבוד האודיו. נא לנסות שוב.</p>';
     }
-
-    let htmlContent = '';
-    transcriptionData.forEach(segment => {
-        const startTime = formatTime(segment.start);
-        htmlContent += `<p><strong>${startTime}</strong><br>${segment.text}</p>`;
-    });
-    responseDiv.innerHTML = htmlContent;
-    downloadBtn.style.display = 'block';
-    downloadBtn.onclick = () => downloadTranscription(transcriptionData, audioFile.name);
 }
 
 async function splitAudioToChunksBySize(file, maxChunkSizeBytes) {
