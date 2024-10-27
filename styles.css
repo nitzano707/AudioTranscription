@@ -77,16 +77,14 @@ button:hover {
 
 #progressBar::-webkit-progress-value {
     background-color: green;
+    border-radius: 10px;
 }
 
-/* הצגת אחוזים במרכז סרגל ההתקדמות */
+/* הצגת אחוזים בקצה סרגל ההתקדמות */
 #progressText {
     position: absolute;
     top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 100%;
-    text-align: center;
+    transform: translateX(-50%); /* התאמת מיקום האחוזים לפי ההתקדמות */
     color: white;
     font-weight: bold;
     font-size: 14px;
