@@ -12,9 +12,11 @@
         <input type="text" id="apiKeyInput">
         <button onclick="saveApiKey()">שמור</button>
     </div>
-    <input type="file" id="audioFile" accept="audio/*">
-    <button onclick="uploadAudio()">העלה ותמלל</button>
-    <button onclick="downloadTranscription()" id="downloadBtn" style="display:none;">הורד תמלול כ-TXT</button>
+    <div id="uploadSection" style="display:none;">
+        <input type="file" id="audioFile" accept="audio/*">
+        <button onclick="uploadAudio()">העלה ותמלל</button>
+        <button onclick="downloadTranscription()" id="downloadBtn" style="display:none;">הורד תמלול כ-TXT</button>
+    </div>
     
     <!-- רכיב הצגת התקדמות -->    
     <div class="progress-wrapper">
