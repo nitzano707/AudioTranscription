@@ -27,9 +27,14 @@ async function saveApiKey() {
 }
 
 // פונקציה לבדוק אם קוד ה-API תקין על ידי בקשת תמלול עם קובץ ריק
+// פונקציה לבדוק אם קוד ה-API תקין על ידי בקשת תמלול עם קובץ אודיו קיים ב-GitHub
 async function checkApiKey(apiKey) {
+    const audioUrl = 'https://github.com/nitzano707/AudioTranscription/blob/main/assets/check_mp3.mp3'; // URL ישיר לקובץ ב-GitHub
+    const response = await fetch(audioUrl);
+    const audioBlob = await response.blob();
+
     const formData = new FormData();
-    formData.append('file', new Blob([""], { type: 'audio/wav' })); // יצירת קובץ אודיו ריק לבדיקה
+    formData.append('file', audioBlob, 'test-audio.wav');
     formData.append('model', 'whisper-large-v3-turbo');
     formData.append('response_format', 'verbose_json');
     formData.append('language', 'he');
@@ -49,6 +54,7 @@ async function checkApiKey(apiKey) {
         return false;
     }
 }
+
 
 // פונקציה לשליפת קוד ה-API מה-Local Storage
 function getApiKey() {
