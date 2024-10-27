@@ -31,7 +31,7 @@ async function checkApiKey(apiKey) {
     console.log("בודק את קוד ה-API:", apiKey);
 
     // URL ישיר לקובץ האודיו ב-GitHub
-    const audioUrl = 'https://raw.githubusercontent.com/username/repo-name/branch-name/path/to/check_mp3.mp3';
+    const audioUrl = 'https://github.com/nitzano707/AudioTranscription/raw/refs/heads/main/assets/check_mp3.mp3';
     
     try {
         const response = await fetch(audioUrl);
