@@ -19,11 +19,9 @@ async function uploadAudio() {
     const maxSizeBytes = maxSizeMB * 1024 * 1024;
     let transcriptionData = [];
 
-    // אם הקובץ קטן מ-25 מגה-בייט, נשלח אותו כיחידה אחת
     if (audioFile.size <= maxSizeBytes) {
         await processAudioChunk(audioFile, transcriptionData, 1, 1, progressLabel, progressBar);
     } else {
-        // פיצול הקובץ לחלקים של 9 דקות ושמירת סוג הקובץ
         const chunks = await splitAndProcessAudio(audioFile, 9 * 60); // פיצול ל-9 דקות
         const totalChunks = chunks.length;
 
@@ -65,7 +63,6 @@ async function splitAndProcessAudio(file, chunkDuration) {
         const end = Math.min(currentTime + chunkDuration, totalDuration);
         const frameCount = Math.floor((end - currentTime) * sampleRate);
 
-        // יצירת AudioBuffer חדש עבור כל מקטע
         const chunkBuffer = audioContext.createBuffer(numChannels, frameCount, sampleRate);
 
         for (let channel = 0; channel < numChannels; channel++) {
@@ -77,7 +74,7 @@ async function splitAndProcessAudio(file, chunkDuration) {
             }
         }
 
-        const blob = await bufferToBlob(chunkBuffer, file.type);
+        const blob = bufferToWaveBlob(chunkBuffer);
         chunks.push(blob);
         currentTime = end;
     }
@@ -85,16 +82,55 @@ async function splitAndProcessAudio(file, chunkDuration) {
     return chunks;
 }
 
-async function bufferToBlob(audioBuffer, mimeType) {
-    const offlineContext = new OfflineAudioContext(audioBuffer.numberOfChannels, audioBuffer.length, audioBuffer.sampleRate);
-    const bufferSource = offlineContext.createBufferSource();
-    bufferSource.buffer = audioBuffer;
-    bufferSource.connect(offlineContext.destination);
-    bufferSource.start();
-    const renderedBuffer = await offlineContext.startRendering();
+function bufferToWaveBlob(abuffer) {
+    const numOfChan = abuffer.numberOfChannels;
+    const length = abuffer.length * numOfChan * 2 + 44;
+    const buffer = new ArrayBuffer(length);
+    const view = new DataView(buffer);
+    const channels = [];
+    let offset = 0;
+    let pos = 0;
 
-    const arrayBuffer = await renderedBuffer.arrayBuffer();
-    return new Blob([arrayBuffer], { type: mimeType });
+    function setUint16(data) {
+        view.setUint16(pos, data, true);
+        pos += 2;
+    }
+
+    function setUint32(data) {
+        view.setUint32(pos, data, true);
+        pos += 4;
+    }
+
+    setUint32(0x46464952); // "RIFF"
+    setUint32(length - 8); // file length - 8
+    setUint32(0x45564157); // "WAVE"
+
+    setUint32(0x20746d66); // "fmt " chunk
+    setUint32(16);         // PCM format
+    setUint16(1);          // format (PCM)
+    setUint16(numOfChan);
+    setUint32(abuffer.sampleRate);
+    setUint32(abuffer.sampleRate * 2 * numOfChan);
+    setUint16(numOfChan * 2);
+    setUint16(16);
+
+    setUint32(0x61746164); // "data" chunk
+    setUint32(length - pos - 4);
+
+    for (let i = 0; i < abuffer.numberOfChannels; i++) {
+        channels.push(abuffer.getChannelData(i));
+    }
+
+    while (pos < length) {
+        for (let i = 0; i < numOfChan; i++) {
+            const sample = Math.max(-1, Math.min(1, channels[i][offset]));
+            view.setInt16(pos, sample < 0 ? sample * 32768 : sample * 32767, true);
+            pos += 2;
+        }
+        offset++;
+    }
+
+    return new Blob([buffer], { type: "audio/wav" });
 }
 
 async function processAudioChunk(chunk, transcriptionData, currentChunk, totalChunks, progressLabel, progressBar) {
