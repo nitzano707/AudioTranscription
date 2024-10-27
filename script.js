@@ -26,9 +26,7 @@ async function uploadAudio() {
         
         const progressPercent = Math.round(((i + 1) / totalChunks) * 100);
         progressBar.value = progressPercent;
-        progressBar.innerHTML = `${progressPercent}%`; // הצגת אחוזים בסרגל ההתקדמות
-        progressBar.style.color = 'black'; // צבע הטקסט בתוך הסרגל
-        progressBar.textContent = `${progressPercent}%`; // הצגת האחוזים בתור טקסט
+        progressBar.setAttribute('data-label', `${progressPercent}%`); // הצגת אחוזים בתוך הסרגל
 
         await processAudioChunk(chunkFile, transcriptionData, i + 1, totalChunks, progressBar);
 
