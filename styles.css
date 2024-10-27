@@ -53,6 +53,8 @@ button:hover {
     border: 1px solid #ddd;
     border-radius: 5px;
     max-width: 600px;
+    max-height: 400px;
+    overflow-y: auto;
     margin-left: auto;
     margin-right: auto;
     text-align: right;
