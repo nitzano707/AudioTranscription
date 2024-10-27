@@ -3,7 +3,6 @@ async function uploadAudio() {
     const audioFile = document.getElementById('audioFile').files[0];
     const downloadBtn = document.getElementById('downloadBtn');
     const progressBar = document.getElementById('progressBar');
-    const progressContainer = document.getElementById('progressContainer');
 
     if (!audioFile) {
         responseDiv.innerHTML = '<p>אנא בחר קובץ אודיו.</p>';
@@ -41,9 +40,6 @@ async function uploadAudio() {
     downloadBtn.style.display = 'block';
     downloadBtn.onclick = () => downloadTranscription(transcriptionData, audioFile.name);
 }
-
-
-
 
 async function splitAudioToChunksBySize(file, maxChunkSizeBytes) {
     const audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -149,7 +145,6 @@ async function processAudioChunk(chunk, transcriptionData, currentChunk, totalCh
         if (response.ok) {
             const data = await response.json();
             transcriptionData.push(...data.segments);
-            progressBar.value = (currentChunk / totalChunks) * 100;
         } else {
             const errorText = await response.text();
             console.error(`Error for chunk ${currentChunk}:`, errorText);
