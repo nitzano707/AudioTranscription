@@ -63,26 +63,28 @@ async function checkApiKey(apiKey) {
 
 async function uploadAudio() {
     const responseDiv = document.getElementById('response');
-    const audioFile = document.getElementById('audioFile').files[0];
-    const downloadBtn = document.getElementById('downloadTxtBtn');
-    const downloadCSVBtn = document.getElementById('downloadCsvBtn');
+    const audioFileInput = document.getElementById('audioFile');
+    const downloadTxtBtn = document.getElementById('downloadTxtBtn');
+    const downloadCsvBtn = document.getElementById('downloadCsvBtn');
     const copyBtn = document.getElementById('copyBtn');
     const progressBar = document.getElementById('progressBar');
 
-    if (!responseDiv || !audioFile || !downloadBtn || !downloadCSVBtn || !copyBtn || !progressBar) {
-        console.error("אחד או יותר מהאלמנטים לא נמצאו ב-DOM");
+    if (!audioFileInput.files[0]) {
+        responseDiv.innerHTML = '<p>אנא בחר קובץ אודיו.</p>';
         return;
     }
 
+    const audioFile = audioFileInput.files[0];
+    const audioFileName = audioFile.name;
     responseDiv.textContent = 'מעבד את הבקשה...';
-    downloadBtn.style.display = 'none';
-    downloadCSVBtn.style.display = 'none';
+    downloadTxtBtn.style.display = 'none';
+    downloadCsvBtn.style.display = 'none';
     copyBtn.style.display = 'none';
+
+    let transcriptionData = [];
 
     const maxChunkSizeMB = 24;
     const maxChunkSizeBytes = maxChunkSizeMB * 1024 * 1024;
-    let transcriptionData = [];
-
     const chunks = await splitAudioToChunksBySize(audioFile, maxChunkSizeBytes);
     const totalChunks = chunks.length;
 
@@ -93,22 +95,21 @@ async function uploadAudio() {
         progressBar.style.width = `${progressPercent}%`;
         progressBar.textContent = `${progressPercent}%`;
 
-        await processAudioChunk(chunkFile, transcriptionData, i + 1, totalChunks, progressBar);
+        await processAudioChunk(chunkFile, transcriptionData, i + 1, totalChunks);
         await new Promise(resolve => setTimeout(resolve, 500));
     }
 
-    let htmlContent = '';
-    transcriptionData.forEach(segment => {
+    responseDiv.innerHTML = transcriptionData.map(segment => {
         const startTime = formatTime(segment.start);
-        htmlContent += `<p><strong>${startTime}</strong><br>${segment.text}</p>`;
-    });
-    responseDiv.innerHTML = htmlContent;
+        return `<p><strong>${startTime}</strong><br>${segment.text}</p>`;
+    }).join('');
 
-    downloadBtn.style.display = 'block';
-    downloadCSVBtn.style.display = 'block';
+    downloadTxtBtn.style.display = 'block';
+    downloadCsvBtn.style.display = 'block';
     copyBtn.style.display = 'inline-block';
 }
 
+// פונקציה להורדת תמלול כ-CSV
 function downloadTranscriptionAsCSV(data, fileName) {
     let csvContent = "\uFEFF"; // הוספת BOM
     csvContent += "חותמת זמן,תמלול\n";
@@ -126,6 +127,21 @@ function downloadTranscriptionAsCSV(data, fileName) {
     link.click();
 }
 
+// פונקציה להורדת תמלול כ-TXT
+function downloadTranscription(data, fileName) {
+    let textContent = `תמלול של קובץ אודיו: ${fileName}\n\n`;
+    data.forEach(segment => {
+        const startTime = formatTime(segment.start);
+        textContent += `${startTime}: ${segment.text}\n`;
+    });
+    const blob = new Blob([textContent], { type: 'text/plain' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'transcription.txt';
+    link.click();
+}
+
+// פונקציות עזר
 function formatTime(seconds) {
     const s = Math.floor(seconds % 60).toString().padStart(2, '0');
     const m = Math.floor((seconds / 60) % 60).toString().padStart(2, '0');
