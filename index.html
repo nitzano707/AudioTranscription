@@ -6,35 +6,36 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <!-- מסך הזנת API -->
     <div id="apiKeyContainer" style="display: none;">
         <h2>הזן את קוד ה-API שלך מ-GROQ</h2>
         <input type="text" id="apiKeyInput" placeholder="הכנס את קוד ה-API כאן">
         <button onclick="saveApiKey()">שמור קוד API</button>
     </div>
 
+    <!-- מסך ראשי - העלאת קובץ ותמלול -->
     <div id="mainContainer" style="display: none;">
-    <h1>העלאת קובץ אודיו ותמלול לעברית</h1>
-    <input type="file" id="audioFile" accept="audio/*">
-    <button onclick="uploadAudio()" id="uploadBtn">העלה ותמלל</button>
-    
-    <!-- קונטיינר לכפתורי ההורדה -->
-    <div id="downloadButtonsContainer">
-        <button onclick="downloadTranscription()" id="downloadTxtBtn" style="display:none;">הורד תמלול כ-TXT</button>
-        <button onclick="downloadTranscriptionAsCSV(transcriptionData, audioFile.name)" id="downloadCsvBtn" style="display:none;">הורד תמלול כ-CSV</button>
+        <h1>העלאת קובץ אודיו ותמלול לעברית</h1>
+        <input type="file" id="audioFile" accept="audio/*">
+        <button onclick="uploadAudio()" id="uploadBtn">העלה ותמלל</button>
+
+        <!-- קונטיינר לכפתורי ההורדה -->
+        <div id="downloadButtonsContainer">
+            <button id="downloadTxtBtn" style="display:none;" onclick="downloadTranscription(transcriptionData, audioFile.name)">הורד תמלול כ-TXT</button>
+            <button id="downloadCsvBtn" style="display:none;" onclick="downloadTranscriptionAsCSV(transcriptionData, audioFile.name)">הורד תמלול כ-CSV</button>
+        </div>
+
+        <!-- כפתור העתקה -->
+        <button id="copyBtn" onclick="copyTranscription()" style="display: none;">העתק תמלול</button>
+        <span id="copyMessage" style="display: none;">התמלול הועתק!</span>
+
+        <!-- רכיב הצגת התקדמות -->
+        <div class="progress-wrapper">
+            <div id="progressBar">0%</div>
+        </div>
+
+        <div id="response"></div>
     </div>
-
-    <!-- כפתור העתקה -->
-    <button id="copyBtn" onclick="copyTranscription()" style="display: none;">העתק תמלול</button>
-    <span id="copyMessage" style="display: none;">התמלול הועתק!</span>
-
-    <!-- רכיב הצגת התקדמות -->
-    <div class="progress-wrapper">
-        <div id="progressBar">0%</div>
-    </div>
-
-    <div id="response"></div>
-</div>
-
 
     <script src="script.js"></script>
 </body>
