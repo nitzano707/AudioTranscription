@@ -22,7 +22,7 @@ async function uploadAudio() {
     if (audioFile.size <= maxSizeBytes) {
         await processAudioChunk(audioFile, transcriptionData, 1, 1, progressLabel, progressBar);
     } else {
-        const chunks = await splitAndProcessAudio(audioFile, 9 * 60); // פיצול ל-9 דקות
+        const chunks = await splitAndProcessAudio(audioFile, 5 * 60); // פיצול ל-5 דקות כדי להקטין גודל
         const totalChunks = chunks.length;
 
         for (let i = 0; i < totalChunks; i++) {
