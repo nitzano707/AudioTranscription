@@ -1,4 +1,3 @@
-
 async function uploadAudio() {
     const responseDiv = document.getElementById('response');
     const audioFile = document.getElementById('audioFile').files[0];
@@ -26,8 +25,9 @@ async function uploadAudio() {
     for (let i = 0; i < totalChunks; i++) {
         const chunkFile = new File([chunks[i]], `chunk_${i + 1}.${audioFile.name.split('.').pop()}`, { type: audioFile.type });
         
-        progressBar.value = (i / totalChunks) * 100;
-        progressLabel.textContent = `מעבד חלק ${i + 1} מתוך ${totalChunks}...`;
+        const progressPercent = Math.round(((i + 1) / totalChunks) * 100);
+        progressBar.value = progressPercent;
+        progressBar.innerHTML = `${progressPercent}%`; // הצגת אחוזים בסרגל ההתקדמות
 
         await processAudioChunk(chunkFile, transcriptionData, i + 1, totalChunks, progressLabel, progressBar);
 
