@@ -1,9 +1,12 @@
 // בדיקה אם קוד ה-API קיים ב-Local Storage והפעלת המסך המתאים
 window.onload = function() {
+    console.log("window.onload מופעל"); // הודעת לוג לבדיקת הפעלת הקוד
     const apiKey = localStorage.getItem('apiKey');
     if (apiKey) {
+        // אם קוד ה-API קיים, הצג את המסך הראשי
         document.getElementById('mainContainer').style.display = 'block';
     } else {
+        // אם קוד ה-API לא קיים, הצג את מסך קלט ה-API
         document.getElementById('apiKeyContainer').style.display = 'block';
     }
 }
