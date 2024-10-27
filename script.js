@@ -28,6 +28,12 @@ async function uploadAudio() {
     const downloadBtn = document.getElementById('downloadBtn');
     const progressBar = document.getElementById('progressBar');
 
+    // בדיקה אם האלמנטים קיימים
+    if (!responseDiv || !downloadBtn || !progressBar) {
+        console.error("אחד האלמנטים הדרושים לא נמצא ב-DOM");
+        return;
+    }
+
     if (!audioFile) {
         responseDiv.innerHTML = '<p>אנא בחר קובץ אודיו.</p>';
         return;
@@ -60,6 +66,7 @@ async function uploadAudio() {
     downloadBtn.style.display = 'block';
     downloadBtn.onclick = () => downloadTranscription(transcriptionData, audioFile.name);
 }
+
 
 function loadTranscriptionToIframe(transcriptionData) {
     const iframe = document.getElementById('transcriptionIframe');
