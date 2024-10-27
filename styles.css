@@ -19,32 +19,64 @@ input[type="file"] {
     font-size: 16px;
 }
 
-button {
-    padding: 10px 20px;
-    font-size: 16px;
+/* כפתור העלאה */
+#uploadBtn {
     background-color: #e74c3c;
     color: white;
+    padding: 10px 20px;
+    font-size: 16px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s;
-    margin: 10px 0;
+    margin: 10px 5px;
 }
 
-button:hover {
+#uploadBtn:hover {
     background-color: #c0392b;
 }
 
-/* כפתור ההורדה */
-#downloadBtn {
-    display: none;
-    margin-top: 20px;
-    margin-left: auto;
-    margin-right: auto;
-    display: block;
+/* קונטיינר לכפתורי ההורדה */
+#downloadButtonsContainer {
+    display: flex;
+    justify-content: center;
+    gap: 10px; /* מרווח בין הכפתורים */
+    margin-top: 10px;
 }
 
-/* כפתור העתקה */
+/* כפתור הורדת TXT */
+#downloadTxtBtn {
+    background-color: #3498db; /* צבע לכפתור TXT */
+    color: white;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#downloadTxtBtn:hover {
+    background-color: #2980b9;
+}
+
+/* כפתור הורדת CSV */
+#downloadCsvBtn {
+    background-color: #2ecc71; /* צבע לכפתור CSV */
+    color: white;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#downloadCsvBtn:hover {
+    background-color: #27ae60;
+}
+
+/* כפתור ההעתקה */
 #copyBtn {
     background-color: #4CAF50;
     color: white;
@@ -53,9 +85,7 @@ button:hover {
     padding: 10px;
     cursor: pointer;
     font-size: 14px;
-    margin-bottom: 10px;
-    display: inline-flex;
-    align-items: center;
+    margin-top: 10px;
 }
 
 #copyBtn:hover {
@@ -84,6 +114,7 @@ button:hover {
     text-align: right;
 }
 
+/* עיצוב רכיב ההתקדמות */
 .progress-wrapper {
     position: relative;
     width: 100%;
