@@ -22,6 +22,8 @@
 
         <!-- כפתור העתקה - מוצג רק לאחר קבלת תמלול -->
         <button id="copyBtn" onclick="copyTranscription()" style="display: none;">העתק תמלול</button>
+        <button onclick="downloadTranscriptionAsCSV(transcriptionData, audioFile.name)" id="downloadCSVBtn" style="display:none;">הורד תמלול כ-CSV</button>
+
         <span id="copyMessage" style="display: none;">התמלול הועתק!</span>
 
         <!-- רכיב הצגת התקדמות -->
