@@ -19,30 +19,26 @@ async function uploadAudio() {
     const maxSizeBytes = maxSizeMB * 1024 * 1024;
     let transcriptionData = [];
 
-    // בדיקה אם גודל הקובץ קטן מ-25 מגה-בייט
+    // אם הקובץ קטן מ-25 מגה-בייט, נשלח אותו כיחידה אחת
     if (audioFile.size <= maxSizeBytes) {
         await processAudioChunk(audioFile, transcriptionData, 1, 1, progressLabel, progressBar);
     } else {
-        // אם הקובץ גדול מדי, נפצל אותו לקטעים של 9 דקות כל אחד
+        // פיצול הקובץ לחלקים של 9 דקות ושמירת סוג הקובץ
         const chunks = await splitAndProcessAudio(audioFile, 9 * 60); // פיצול ל-9 דקות
         const totalChunks = chunks.length;
 
         for (let i = 0; i < totalChunks; i++) {
-            // יצירת קובץ מכל מקטע כדי לשמור על סוג הקובץ
             const chunkFile = new File([chunks[i]], `chunk_${i + 1}.${audioFile.name.split('.').pop()}`, { type: audioFile.type });
             
-            // עדכון חיווי התקדמות
             progressBar.value = (i / totalChunks) * 100;
             progressLabel.textContent = `מעבד חלק ${i + 1} מתוך ${totalChunks}...`;
 
             await processAudioChunk(chunkFile, transcriptionData, i + 1, totalChunks, progressLabel, progressBar);
 
-            // השהייה קטנה בין כל בקשה כדי להימנע מעומס על השרת
             await new Promise(resolve => setTimeout(resolve, 500));
         }
     }
 
-    // הצגת התמלול המלא
     let htmlContent = '';
     transcriptionData.forEach(segment => {
         const startTime = formatTime(segment.start);
@@ -60,12 +56,26 @@ async function splitAndProcessAudio(file, chunkDuration) {
     const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
 
     const totalDuration = audioBuffer.duration;
+    const sampleRate = audioBuffer.sampleRate;
+    const numChannels = audioBuffer.numberOfChannels;
     let currentTime = 0;
     const chunks = [];
 
     while (currentTime < totalDuration) {
         const end = Math.min(currentTime + chunkDuration, totalDuration);
-        const chunkBuffer = audioBuffer.slice(currentTime * audioBuffer.sampleRate, end * audioBuffer.sampleRate);
+        const frameCount = Math.floor((end - currentTime) * sampleRate);
+
+        // יצירת AudioBuffer חדש עבור כל מקטע
+        const chunkBuffer = audioContext.createBuffer(numChannels, frameCount, sampleRate);
+
+        for (let channel = 0; channel < numChannels; channel++) {
+            const channelData = audioBuffer.getChannelData(channel).slice(
+                Math.floor(currentTime * sampleRate),
+                Math.floor(end * sampleRate)
+            );
+            chunkBuffer.copyToChannel(channelData, channel);
+        }
+
         const blob = await bufferToBlob(chunkBuffer, file.type);
         chunks.push(blob);
         currentTime = end;
@@ -75,7 +85,6 @@ async function splitAndProcessAudio(file, chunkDuration) {
 }
 
 async function bufferToBlob(audioBuffer, mimeType) {
-    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
     const offlineContext = new OfflineAudioContext(audioBuffer.numberOfChannels, audioBuffer.length, audioBuffer.sampleRate);
     const bufferSource = offlineContext.createBufferSource();
     bufferSource.buffer = audioBuffer;
@@ -99,7 +108,7 @@ async function processAudioChunk(chunk, transcriptionData, currentChunk, totalCh
         const response = await fetch('https://api.groq.com/openai/v1/audio/transcriptions', {
             method: 'POST',
             headers: {
-                'Authorization': 'Bearer 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' // יש להחליף במפתח ה-API האישי שלך
+                'Authorization': 'Bearer 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'
             },
             body: formData
         });
