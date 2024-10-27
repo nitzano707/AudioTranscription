@@ -3,6 +3,7 @@ async function uploadAudio() {
     const audioFile = document.getElementById('audioFile').files[0];
     const downloadBtn = document.getElementById('downloadBtn');
     const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText'); // אלמנט הטקסט של האחוזים
     const progressContainer = document.getElementById('progressContainer');
 
     if (!audioFile) {
@@ -26,7 +27,7 @@ async function uploadAudio() {
         
         const progressPercent = Math.round(((i + 1) / totalChunks) * 100);
         progressBar.value = progressPercent;
-        progressBar.setAttribute('data-label', `${progressPercent}%`); // הצגת אחוזים בתוך הסרגל
+        progressText.textContent = `${progressPercent}%`; // הצגת אחוזים בטקסט מעל הסרגל
 
         await processAudioChunk(chunkFile, transcriptionData, i + 1, totalChunks, progressBar);
 
@@ -43,6 +44,7 @@ async function uploadAudio() {
     downloadBtn.onclick = () => downloadTranscription(transcriptionData, audioFile.name);
     progressContainer.style.display = 'none';
 }
+
 
 async function splitAudioToChunksBySize(file, maxChunkSizeBytes) {
     const audioContext = new (window.AudioContext || window.webkitAudioContext)();
