@@ -19,24 +19,30 @@ async function uploadAudio() {
     const maxSizeBytes = maxSizeMB * 1024 * 1024;
     let transcriptionData = [];
 
+    // בדיקה אם גודל הקובץ קטן מ-25 מגה-בייט
     if (audioFile.size <= maxSizeBytes) {
         await processAudioChunk(audioFile, transcriptionData, 1, 1, progressLabel, progressBar);
     } else {
+        // אם הקובץ גדול מדי, נפצל אותו לקטעים של 9 דקות כל אחד
         const chunks = await splitAndProcessAudio(audioFile, 9 * 60); // פיצול ל-9 דקות
         const totalChunks = chunks.length;
 
         for (let i = 0; i < totalChunks; i++) {
+            // יצירת קובץ מכל מקטע כדי לשמור על סוג הקובץ
             const chunkFile = new File([chunks[i]], `chunk_${i + 1}.${audioFile.name.split('.').pop()}`, { type: audioFile.type });
             
+            // עדכון חיווי התקדמות
             progressBar.value = (i / totalChunks) * 100;
             progressLabel.textContent = `מעבד חלק ${i + 1} מתוך ${totalChunks}...`;
 
             await processAudioChunk(chunkFile, transcriptionData, i + 1, totalChunks, progressLabel, progressBar);
 
+            // השהייה קטנה בין כל בקשה כדי להימנע מעומס על השרת
             await new Promise(resolve => setTimeout(resolve, 500));
         }
     }
 
+    // הצגת התמלול המלא
     let htmlContent = '';
     transcriptionData.forEach(segment => {
         const startTime = formatTime(segment.start);
