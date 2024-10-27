@@ -77,9 +77,9 @@ async function uploadAudio() {
     const audioFile = audioFileInput.files[0];
     const audioFileName = audioFile.name;
     responseDiv.textContent = 'מעבד את הבקשה...';
-    downloadTxtBtn.style.display = 'none';
-    downloadCsvBtn.style.display = 'none';
-    copyBtn.style.display = 'none';
+    if (downloadTxtBtn) downloadTxtBtn.style.display = 'none';
+    if (downloadCsvBtn) downloadCsvBtn.style.display = 'none';
+    if (copyBtn) copyBtn.style.display = 'none';
 
     let transcriptionData = [];
 
@@ -92,8 +92,10 @@ async function uploadAudio() {
         const chunkFile = new File([chunks[i]], `chunk_${i + 1}.${audioFile.name.split('.').pop()}`, { type: audioFile.type });
         
         const progressPercent = Math.round(((i + 1) / totalChunks) * 100);
-        progressBar.style.width = `${progressPercent}%`;
-        progressBar.textContent = `${progressPercent}%`;
+        if (progressBar) {
+            progressBar.style.width = `${progressPercent}%`;
+            progressBar.textContent = `${progressPercent}%`;
+        }
 
         await processAudioChunk(chunkFile, transcriptionData, i + 1, totalChunks);
         await new Promise(resolve => setTimeout(resolve, 500));
@@ -104,9 +106,9 @@ async function uploadAudio() {
         return `<p><strong>${startTime}</strong><br>${segment.text}</p>`;
     }).join('');
 
-    downloadTxtBtn.style.display = 'block';
-    downloadCsvBtn.style.display = 'block';
-    copyBtn.style.display = 'inline-block';
+    if (downloadTxtBtn) downloadTxtBtn.style.display = 'block';
+    if (downloadCsvBtn) downloadCsvBtn.style.display = 'block';
+    if (copyBtn) copyBtn.style.display = 'inline-block';
 }
 
 // פונקציה להורדת תמלול כ-CSV
