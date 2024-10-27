@@ -7,11 +7,16 @@
 </head>
 <body>
     <h1>העלאת קובץ אודיו ותמלול לעברית</h1>
+    <div id="apiRequest" style="display:none;">
+        <label for="apiKeyInput">הזן את ה-API מ-GROQ:</label>
+        <input type="text" id="apiKeyInput">
+        <button onclick="saveApiKey()">שמור</button>
+    </div>
     <input type="file" id="audioFile" accept="audio/*">
     <button onclick="uploadAudio()">העלה ותמלל</button>
     <button onclick="downloadTranscription()" id="downloadBtn" style="display:none;">הורד תמלול כ-TXT</button>
     
-    <!-- רכיב הצגת התקדמות -->
+    <!-- רכיב הצגת התקדמות -->    
     <div class="progress-wrapper">
         <div id="progressBar">0%</div>
     </div>
