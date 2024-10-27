@@ -32,8 +32,8 @@ async function uploadAudio() {
         // הקובץ בגודל מתאים, שליחה כיחידה אחת
         await processAudioChunk(audioFile, transcriptionData, 1, 1, progressLabel, progressBar);
     } else {
-        // פיצול הקובץ לחלקים של 5 דקות
-        const chunkSize = 5 * 60 * 1000; // 5 דקות במילישניות
+        // פיצול הקובץ לחלקים של 9 דקות
+        const chunkSize = 9 * 60 * 1000; // 9 דקות במילישניות
         const totalChunks = Math.ceil(audioFile.size / chunkSize);
 
         for (let i = 0; i < totalChunks; i++) {
@@ -44,6 +44,9 @@ async function uploadAudio() {
             progressLabel.textContent = `מעבד חלק ${i + 1} מתוך ${totalChunks}...`;
 
             await processAudioChunk(chunk, transcriptionData, i + 1, totalChunks, progressLabel, progressBar);
+
+            // השהייה של חצי שנייה בין הבקשות כדי למנוע עומס
+            await new Promise(resolve => setTimeout(resolve, 500));
         }
     }
 
@@ -80,12 +83,13 @@ async function processAudioChunk(chunk, transcriptionData, currentChunk, totalCh
             transcriptionData.push(...data.segments);
             progressBar.value = (currentChunk / totalChunks) * 100;
         } else {
-            progressLabel.textContent = `שגיאה בבקשה לחלק ${currentChunk}: ${response.statusText}`;
-            progressContainer.style.display = 'none';
+            const errorText = await response.text();
+            progressLabel.textContent = `שגיאה בבקשה לחלק ${currentChunk}: ${response.status} - ${errorText}`;
+            console.error(`Error for chunk ${currentChunk}:`, errorText);
         }
     } catch (error) {
         progressLabel.textContent = `אירעה שגיאה: ${error.message}`;
-        progressContainer.style.display = 'none';
+        console.error('Network error:', error);
     }
 }
 
