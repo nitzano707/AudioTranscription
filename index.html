@@ -17,13 +17,14 @@
         <button onclick="uploadAudio()">העלה ותמלל</button>
         <button onclick="downloadTranscription()" id="downloadBtn" style="display:none;">הורד תמלול כ-TXT</button>
     </div>
-    
-    <!-- רכיב הצגת התקדמות -->    
-    <div class="progress-wrapper">
-        <div id="progressBar">0%</div>
-    </div>
 
-    <div id="response"></div>
+    <div id="progressSection" style="display:none;">
+        <!-- רכיב הצגת התקדמות -->    
+        <div class="progress-wrapper">
+            <div id="progressBar">0%</div>
+        </div>
+        <div id="response"></div>
+    </div>
 
     <script src="script.js"></script>
 </body>
