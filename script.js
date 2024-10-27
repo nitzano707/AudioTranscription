@@ -29,10 +29,10 @@ async function uploadAudio() {
         progressBar.value = progressPercent;
         progressText.textContent = `${progressPercent}%`; // הצגת אחוזים בטקסט
         
-        // עדכון מיקום הטקסט כך שיהיה קרוב לקצה החלק הירוק
+        // מיקום האחוזים במרכז החלק הירוק
         const progressBarWidth = progressBar.clientWidth;
-        const textOffset = (progressPercent / 100) * progressBarWidth - 20; // מתאים את המיקום לפי אחוזי ההתקדמות
-        progressText.style.right = `${textOffset}px`;
+        const textOffset = (progressPercent / 100) * progressBarWidth / 2;
+        progressText.style.right = `calc(${progressPercent}% - ${textOffset}px)`;
 
         await processAudioChunk(chunkFile, transcriptionData, i + 1, totalChunks, progressBar);
 
@@ -49,6 +49,7 @@ async function uploadAudio() {
     downloadBtn.onclick = () => downloadTranscription(transcriptionData, audioFile.name);
     progressContainer.style.display = 'none';
 }
+
 
 
 async function splitAudioToChunksBySize(file, maxChunkSizeBytes) {
