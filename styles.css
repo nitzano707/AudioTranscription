@@ -83,12 +83,12 @@ button:hover {
     z-index: 1;
 }
 
-/* הצגת אחוזים בקצה החלק הירוק של סרגל ההתקדמות */
+/* הצגת אחוזים בקצה החלק הירוק של סרגל ההתקדמות מימין */
 #progressText {
     position: absolute;
     top: 0;
-    left: 0;
-    transform: translateX(10px); /* התאמת מיקום התחלתי */
+    right: 0;
+    transform: translateX(50%); /* התאמת מיקום הטקסט */
     color: white;
     font-weight: bold;
     font-size: 14px;
