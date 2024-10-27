@@ -203,3 +203,37 @@ function downloadTranscription(data, fileName) {
     link.download = 'transcription.txt';
     link.click();
 }
+
+// פונקציה להעתקת תוכן התמלול מה-iframe
+function copyTranscription() {
+    const iframe = document.getElementById('transcriptionIframe');
+    iframe.contentWindow.document.execCommand("selectAll");
+    iframe.contentWindow.document.execCommand("copy");
+
+    const copyMessage = document.getElementById('copyMessage');
+    copyMessage.style.display = 'inline';
+    
+    // שינוי האייקון לאחר ההעתקה
+    const copyBtn = document.getElementById('copyBtn');
+    copyBtn.innerHTML = '<img src="copied-icon.png" alt="הועתק" style="width: 20px; vertical-align: middle;"> הועתק';
+
+    // החזרת כפתור ההעתק לאחר 3 שניות
+    setTimeout(() => {
+        copyMessage.style.display = 'none';
+        copyBtn.innerHTML = '<img src="copy-icon.png" alt="העתק" style="width: 20px; vertical-align: middle;"> העתק';
+    }, 3000);
+}
+
+// פונקציה להטענת התמלול לתוך ה-iframe
+function loadTranscriptionToIframe(transcriptionData) {
+    const iframe = document.getElementById('transcriptionIframe');
+    const content = transcriptionData.map(segment => {
+        const startTime = formatTime(segment.start);
+        return `<p><strong>${startTime}</strong> ${segment.text}</p>`;
+    }).join('');
+    
+    iframe.contentDocument.open();
+    iframe.contentDocument.write(`<html><body dir="rtl" style="font-family: Arial, sans-serif;">${content}</body></html>`);
+    iframe.contentDocument.close();
+}
+
