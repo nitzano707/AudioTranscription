@@ -1,3 +1,11 @@
+// פונקציה לעיצוב הזמן
+function formatTime(seconds) {
+    const ms = Math.floor((seconds % 1) * 10).toString().padStart(1, '0');
+    const s = Math.floor(seconds % 60).toString().padStart(2, '0');
+    const m = Math.floor((seconds / 60) % 60).toString().padStart(2, '0');
+    return `${m}:${s}.${ms}`;
+}
+
 async function uploadAudio() {
     const responseDiv = document.getElementById('response');
     const audioFile = document.getElementById('audioFile').files[0];
@@ -79,14 +87,6 @@ async function processAudioChunk(chunk, transcriptionData, currentChunk, totalCh
         progressLabel.textContent = `אירעה שגיאה: ${error.message}`;
         progressContainer.style.display = 'none';
     }
-}
-
-// פונקציה לעיצוב הזמן
-function formatTime(seconds) {
-    const ms = Math.floor((seconds % 1) * 10).toString().padStart(1, '0');
-    const s = Math.floor(seconds % 60).toString().padStart(2, '0');
-    const m = Math.floor((seconds / 60) % 60).toString().padStart(2, '0');
-    return `${m}:${s}.${ms}`;
 }
 
 function downloadTranscription(data, fileName) {
