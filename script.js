@@ -32,7 +32,7 @@ async function uploadAudio() {
         // מיקום האחוזים במרכז החלק הירוק
         const progressBarWidth = progressBar.clientWidth;
         const textOffset = (progressPercent / 100) * progressBarWidth / 2;
-        progressText.style.right = `calc(${progressPercent}% - ${textOffset}px)`;
+        progressText.style.left = `calc(${progressPercent}% - ${textOffset}px)`;
 
         await processAudioChunk(chunkFile, transcriptionData, i + 1, totalChunks, progressBar);
 
