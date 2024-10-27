@@ -29,9 +29,9 @@ async function uploadAudio() {
         progressBar.value = progressPercent;
         progressText.textContent = `${progressPercent}%`; // הצגת אחוזים בטקסט
         
-        // עדכון מיקום האחוזים לפי רוחב סרגל ההתקדמות
+        // עדכון מיקום האחוזים בהתאם לרוחב החלק הירוק של סרגל ההתקדמות
         const progressBarWidth = progressBar.clientWidth;
-        const textOffset = (progressPercent / 100) * progressBarWidth;
+        const textOffset = (progressPercent / 100) * progressBarWidth - 15; // מיקום טקסט בקצה החלק הירוק
         progressText.style.left = `${textOffset}px`;
 
         await processAudioChunk(chunkFile, transcriptionData, i + 1, totalChunks, progressBar);
