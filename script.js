@@ -4,7 +4,6 @@ async function uploadAudio() {
     const downloadBtn = document.getElementById('downloadBtn');
     const progressBar = document.getElementById('progressBar');
     const progressContainer = document.getElementById('progressContainer');
-    const progressLabel = document.getElementById('progressLabel');
 
     if (!audioFile) {
         responseDiv.innerHTML = '<p>אנא בחר קובץ אודיו.</p>';
@@ -28,8 +27,10 @@ async function uploadAudio() {
         const progressPercent = Math.round(((i + 1) / totalChunks) * 100);
         progressBar.value = progressPercent;
         progressBar.innerHTML = `${progressPercent}%`; // הצגת אחוזים בסרגל ההתקדמות
+        progressBar.style.color = 'black'; // צבע הטקסט בתוך הסרגל
+        progressBar.textContent = `${progressPercent}%`; // הצגת האחוזים בתור טקסט
 
-        await processAudioChunk(chunkFile, transcriptionData, i + 1, totalChunks, progressLabel, progressBar);
+        await processAudioChunk(chunkFile, transcriptionData, i + 1, totalChunks, progressBar);
 
         await new Promise(resolve => setTimeout(resolve, 500));
     }
@@ -130,7 +131,7 @@ function bufferToWaveBlob(abuffer) {
     return new Blob([buffer], { type: "audio/wav" });
 }
 
-async function processAudioChunk(chunk, transcriptionData, currentChunk, totalChunks, progressLabel, progressBar) {
+async function processAudioChunk(chunk, transcriptionData, currentChunk, totalChunks, progressBar) {
     const formData = new FormData();
     formData.append('file', chunk);
     formData.append('model', 'whisper-large-v3-turbo');
@@ -152,11 +153,9 @@ async function processAudioChunk(chunk, transcriptionData, currentChunk, totalCh
             progressBar.value = (currentChunk / totalChunks) * 100;
         } else {
             const errorText = await response.text();
-            progressLabel.textContent = `שגיאה בבקשה לחלק ${currentChunk}: ${response.status} - ${errorText}`;
             console.error(`Error for chunk ${currentChunk}:`, errorText);
         }
     } catch (error) {
-        progressLabel.textContent = `אירעה שגיאה: ${error.message}`;
         console.error('Network error:', error);
     }
 }
