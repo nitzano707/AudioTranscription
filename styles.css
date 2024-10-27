@@ -1,3 +1,4 @@
+
 /* עיצוב כללי לדף */
 body {
     font-family: Arial, sans-serif;
@@ -28,7 +29,7 @@ button {
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s;
-    margin: 10px 0;
+    margin: 10px 0; /* רווח מעל ומתחת לכפתור */
 }
 
 button:hover {
@@ -41,7 +42,7 @@ button:hover {
     margin-top: 20px;
     margin-left: auto;
     margin-right: auto;
-    display: block;
+    display: block; /* ממרכז את הכפתור */
 }
 
 /* עיצוב תיבת התגובה */
@@ -52,13 +53,12 @@ button:hover {
     border: 1px solid #ddd;
     border-radius: 5px;
     max-width: 600px;
-    max-height: 400px; /* הגדרת גובה מקסימלי */
-    overflow-y: auto; /* גלילה אנכית במקרה שהתוכן חורג מגובה התיבה */
     margin-left: auto;
     margin-right: auto;
     text-align: right;
 }
 
+/* עיצוב עבור סרגל ההתקדמות */
 .progress-wrapper {
     position: relative;
     width: 100%;
@@ -78,33 +78,4 @@ button:hover {
     color: white;
     font-weight: bold;
     transition: width 0.3s ease;
-}
-
-.transcription-container {
-    margin-top: 20px;
-    text-align: right;
-    position: relative;
-}
-
-#copyBtn {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    padding: 10px;
-    cursor: pointer;
-    font-size: 14px;
-    margin-bottom: 10px;
-    display: inline-flex;
-    align-items: center;
-}
-
-#copyBtn:hover {
-    background-color: #45a049;
-}
-
-#copyMessage {
-    font-size: 14px;
-    color: green;
-    display: inline;
 }
