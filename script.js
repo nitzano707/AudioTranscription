@@ -7,6 +7,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+function saveApiKey() {
+    const apiKeyInput = document.getElementById('apiKeyInput').value;
+    if (apiKeyInput) {
+        localStorage.setItem('groqApiKey', apiKeyInput);
+        document.getElementById('apiRequest').style.display = 'none';
+        document.getElementById('uploadSection').style.display = 'block';
+    }
+}
+
 async function uploadAudio() {
     const responseDiv = document.getElementById('response');
     const audioFile = document.getElementById('audioFile').files[0];
