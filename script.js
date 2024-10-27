@@ -3,7 +3,6 @@ async function uploadAudio() {
     const audioFile = document.getElementById('audioFile').files[0];
     const downloadBtn = document.getElementById('downloadBtn');
     const progressBar = document.getElementById('progressBar');
-    const progressText = document.getElementById('progressText'); // אלמנט הטקסט של האחוזים
     const progressContainer = document.getElementById('progressContainer');
 
     if (!audioFile) {
@@ -13,7 +12,6 @@ async function uploadAudio() {
 
     responseDiv.textContent = 'מעבד את הבקשה...';
     downloadBtn.style.display = 'none';
-    progressContainer.style.display = 'block';
 
     const maxChunkSizeMB = 24;
     const maxChunkSizeBytes = maxChunkSizeMB * 1024 * 1024;
@@ -26,13 +24,8 @@ async function uploadAudio() {
         const chunkFile = new File([chunks[i]], `chunk_${i + 1}.${audioFile.name.split('.').pop()}`, { type: audioFile.type });
         
         const progressPercent = Math.round(((i + 1) / totalChunks) * 100);
-        progressBar.value = progressPercent;
-        progressText.textContent = `${progressPercent}%`; // הצגת אחוזים בטקסט
-        
-        // מיקום האחוזים במרכז החלק הירוק
-        const progressBarWidth = progressBar.clientWidth;
-        const textOffset = (progressPercent / 100) * progressBarWidth / 2;
-        progressText.style.left = `calc(${progressPercent}% - ${textOffset}px)`;
+        progressBar.style.width = `${progressPercent}%`;
+        progressBar.textContent = `${progressPercent}%`; // הצגת אחוזים בטקסט במרכז החלק הירוק
 
         await processAudioChunk(chunkFile, transcriptionData, i + 1, totalChunks, progressBar);
 
@@ -47,8 +40,8 @@ async function uploadAudio() {
     responseDiv.innerHTML = htmlContent;
     downloadBtn.style.display = 'block';
     downloadBtn.onclick = () => downloadTranscription(transcriptionData, audioFile.name);
-    progressContainer.style.display = 'none';
 }
+
 
 
 
