@@ -119,3 +119,4 @@ function downloadTranscription(data, fileName) {
     link.download = 'transcription.txt';
     link.click();
 }
+
