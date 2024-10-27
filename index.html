@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html dir="rtl" lang="he">
 <head>
@@ -26,16 +25,6 @@
 
     <div id="response"></div>
 
-    <script>
-        function saveApiKey() {
-            const apiKeyInput = document.getElementById('apiKeyInput').value;
-            if (apiKeyInput) {
-                localStorage.setItem('groqApiKey', apiKeyInput);
-                document.getElementById('apiRequest').style.display = 'none';
-                document.getElementById('uploadSection').style.display = 'block';
-            }
-        }
-    </script>
     <script src="script.js"></script>
 </body>
 </html>
