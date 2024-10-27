@@ -94,7 +94,7 @@ button:hover {
     padding: 10px;
     cursor: pointer;
     font-size: 14px;
-    margin-top: 10px;
+    margin-bottom: 10px;
     display: inline-flex;
     align-items: center;
 }
