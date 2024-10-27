@@ -13,25 +13,28 @@
     </div>
 
     <div id="mainContainer" style="display: none;">
-        <h1>העלאת קובץ אודיו ותמלול לעברית</h1>
-        <input type="file" id="audioFile" accept="audio/*">
-        <button onclick="uploadAudio()">העלה ותמלל</button>
-        
-        <!-- כפתורי הורדה -->
-        <button onclick="downloadTranscription()" id="downloadBtn" style="display:none;">הורד תמלול כ-TXT</button>
-        <button onclick="downloadTranscriptionAsCSV(transcriptionData, audioFile.name)" id="downloadCSVBtn" style="display:none;">הורד תמלול כ-CSV</button>
-
-        <!-- כפתור העתקה -->
-        <button id="copyBtn" onclick="copyTranscription()" style="display: none;">העתק תמלול</button>
-        <span id="copyMessage" style="display: none;">התמלול הועתק!</span>
-
-        <!-- רכיב הצגת התקדמות -->
-        <div class="progress-wrapper">
-            <div id="progressBar">0%</div>
-        </div>
-
-        <div id="response"></div>
+    <h1>העלאת קובץ אודיו ותמלול לעברית</h1>
+    <input type="file" id="audioFile" accept="audio/*">
+    <button onclick="uploadAudio()" id="uploadBtn">העלה ותמלל</button>
+    
+    <!-- קונטיינר לכפתורי ההורדה -->
+    <div id="downloadButtonsContainer">
+        <button onclick="downloadTranscription()" id="downloadTxtBtn" style="display:none;">הורד תמלול כ-TXT</button>
+        <button onclick="downloadTranscriptionAsCSV(transcriptionData, audioFile.name)" id="downloadCsvBtn" style="display:none;">הורד תמלול כ-CSV</button>
     </div>
+
+    <!-- כפתור העתקה -->
+    <button id="copyBtn" onclick="copyTranscription()" style="display: none;">העתק תמלול</button>
+    <span id="copyMessage" style="display: none;">התמלול הועתק!</span>
+
+    <!-- רכיב הצגת התקדמות -->
+    <div class="progress-wrapper">
+        <div id="progressBar">0%</div>
+    </div>
+
+    <div id="response"></div>
+</div>
+
 
     <script src="script.js"></script>
 </body>
