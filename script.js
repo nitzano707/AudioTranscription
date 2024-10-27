@@ -2,6 +2,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const apiKey = localStorage.getItem('groqApiKey');
     if (!apiKey) {
         document.getElementById('apiRequest').style.display = 'block';
+    } else {
+        document.getElementById('uploadSection').style.display = 'block';
     }
 });
 
@@ -10,6 +12,7 @@ function saveApiKey() {
     if (apiKeyInput) {
         localStorage.setItem('groqApiKey', apiKeyInput);
         document.getElementById('apiRequest').style.display = 'none';
+        document.getElementById('uploadSection').style.display = 'block';
     }
 }
 
