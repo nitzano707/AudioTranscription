@@ -82,3 +82,33 @@ button:hover {
     font-weight: bold;
     transition: width 0.3s ease;
 }
+
+.transcription-container {
+    margin-top: 20px;
+    text-align: right;
+    position: relative;
+}
+
+#copyBtn {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-top: 10px;
+    display: inline-flex;
+    align-items: center;
+}
+
+#copyBtn:hover {
+    background-color: #45a049;
+}
+
+#copyMessage {
+    font-size: 14px;
+    color: green;
+    display: inline;
+}
+
