@@ -1,12 +1,10 @@
 // בדיקה אם קוד ה-API קיים ב-Local Storage והפעלת המסך המתאים
 window.onload = function() {
-    console.log("window.onload מופעל"); // הודעת לוג לבדיקת הפעלת הקוד
+    console.log("window.onload מופעל");
     const apiKey = localStorage.getItem('apiKey');
     if (apiKey) {
-        // אם קוד ה-API קיים, הצג את המסך הראשי
         document.getElementById('mainContainer').style.display = 'block';
     } else {
-        // אם קוד ה-API לא קיים, הצג את מסך קלט ה-API
         document.getElementById('apiKeyContainer').style.display = 'block';
     }
 }
@@ -28,18 +26,24 @@ async function saveApiKey() {
     }
 }
 
-// פונקציה לבדוק אם קוד ה-API תקין
+// פונקציה לבדוק אם קוד ה-API תקין על ידי בקשת תמלול עם קובץ ריק
 async function checkApiKey(apiKey) {
+    const formData = new FormData();
+    formData.append('file', new Blob([""], { type: 'audio/wav' })); // יצירת קובץ אודיו ריק לבדיקה
+    formData.append('model', 'whisper-large-v3-turbo');
+    formData.append('response_format', 'verbose_json');
+    formData.append('language', 'he');
+
     try {
-        const response = await fetch('https://api.groq.com/openai/v1/ping', { // מסלול לדוגמה, החלף לפי תיעוד ה-GROQ
-            method: 'GET',
+        const response = await fetch('https://api.groq.com/openai/v1/audio/transcriptions', {
+            method: 'POST',
             headers: {
                 'Authorization': `Bearer ${apiKey}`
-            }
+            },
+            body: formData
         });
 
-        // בדיקה אם הבקשה הצליחה (קוד 200 מצביע על API תקין)
-        return response.ok;
+        return response.ok; // 200 OK מאשר שה-API תקין
     } catch (error) {
         console.error("שגיאה ברשת או בקוד ה-API:", error);
         return false;
@@ -55,6 +59,7 @@ async function uploadAudio() {
     const responseDiv = document.getElementById('response');
     const audioFile = document.getElementById('audioFile').files[0];
     const downloadBtn = document.getElementById('downloadBtn');
+    const downloadCSVBtn = document.getElementById('downloadCSVBtn');
     const copyBtn = document.getElementById('copyBtn');
     const progressBar = document.getElementById('progressBar');
 
@@ -65,7 +70,8 @@ async function uploadAudio() {
 
     responseDiv.textContent = 'מעבד את הבקשה...';
     downloadBtn.style.display = 'none';
-    copyBtn.style.display = 'none'; // הסתר את כפתור ההעתקה בתחילת התהליך
+    downloadCSVBtn.style.display = 'none';
+    copyBtn.style.display = 'none';
 
     const maxChunkSizeMB = 24;
     const maxChunkSizeBytes = maxChunkSizeMB * 1024 * 1024;
@@ -82,7 +88,6 @@ async function uploadAudio() {
         progressBar.textContent = `${progressPercent}%`;
 
         await processAudioChunk(chunkFile, transcriptionData, i + 1, totalChunks, progressBar);
-
         await new Promise(resolve => setTimeout(resolve, 500));
     }
 
@@ -92,22 +97,41 @@ async function uploadAudio() {
         htmlContent += `<p><strong>${startTime}</strong><br>${segment.text}</p>`;
     });
     responseDiv.innerHTML = htmlContent;
+
     downloadBtn.style.display = 'block';
-    copyBtn.style.display = 'inline-block'; // הצג את כפתור ההעתקה לאחר קבלת התמלול
+    downloadCSVBtn.style.display = 'block';
+    copyBtn.style.display = 'inline-block';
     downloadBtn.onclick = () => downloadTranscription(transcriptionData, audioFile.name);
+    downloadCSVBtn.onclick = () => downloadTranscriptionAsCSV(transcriptionData, audioFile.name);
 }
 
-// פונקציה להעתקת התמלול ללוח
+// פונקציה להורדת התמלול כ-CSV
+function downloadTranscriptionAsCSV(data, fileName) {
+    let csvContent = "חותמת זמן,תמלול\n"; // כותרות העמודות
+    
+    data.forEach(segment => {
+        const startTime = formatTime(segment.start);
+        const text = segment.text.replace(/,/g, ""); // הסרת פסיקים כדי למנוע בעיות בפורמט CSV
+        csvContent += `${startTime},${text}\n`;
+    });
+    
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `${fileName.replace(/\.[^/.]+$/, "")}_transcription.csv`;
+    link.click();
+}
+
+// פונקציות עזר להעתקה, הורדה והצגת תמלול
 function copyTranscription() {
     const responseDiv = document.getElementById('response');
     const copyMessage = document.getElementById('copyMessage');
     
-    // יצירת טקסט להעתקה
     const textToCopy = responseDiv.innerText;
 
     navigator.clipboard.writeText(textToCopy).then(() => {
-        copyMessage.style.display = 'inline'; // הצגת הודעה שהתמלול הועתק
-        setTimeout(() => copyMessage.style.display = 'none', 2000); // הסתרת ההודעה לאחר 2 שניות
+        copyMessage.style.display = 'inline';
+        setTimeout(() => copyMessage.style.display = 'none', 2000);
     }).catch(err => {
         console.error('שגיאה בהעתקה:', err);
     });
@@ -244,21 +268,5 @@ function downloadTranscription(data, fileName) {
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
     link.download = 'transcription.txt';
-    link.click();
-}
-
-function downloadTranscriptionAsCSV(data, fileName) {
-    let csvContent = "חותמת זמן,תמלול\n"; // כותרות העמודות
-    
-    data.forEach(segment => {
-        const startTime = formatTime(segment.start);
-        const text = segment.text.replace(/,/g, ""); // הסרת פסיקים כדי למנוע בעיות בפורמט CSV
-        csvContent += `${startTime},${text}\n`;
-    });
-    
-    const blob = new Blob([csvContent], { type: 'text/csv' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = `${fileName.replace(/\.[^/.]+$/, "")}_transcription.csv`; // שינוי שם הקובץ ל-CSV
     link.click();
 }
