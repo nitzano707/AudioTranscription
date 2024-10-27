@@ -156,10 +156,11 @@ async function processAudioChunk(chunk, transcriptionData, currentChunk, totalCh
 }
 
 function formatTime(seconds) {
-    const ms = Math.floor((seconds % 1) * 10).toString().padStart(1, '0');
+    // const ms = Math.floor((seconds % 1) * 10).toString().padStart(1, '0');
     const s = Math.floor(seconds % 60).toString().padStart(2, '0');
     const m = Math.floor((seconds / 60) % 60).toString().padStart(2, '0');
-    return `${m}:${s}.${ms}`;
+    // return `${m}:${s}.${ms}`;
+    return `${m}:${s}`;
 }
 
 function downloadTranscription(data, fileName) {
