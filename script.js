@@ -1,4 +1,3 @@
-// בדיקה אם קוד ה-API קיים ב-Local Storage והפעלת המסך המתאים
 window.onload = function() {
     const apiKey = localStorage.getItem('apiKey');
     if (apiKey) {
@@ -57,6 +56,7 @@ async function uploadAudio() {
     }
 
     loadTranscriptionToIframe(transcriptionData);
+    document.getElementById('copyBtn').style.display = 'inline-block'; // הצגת כפתור ההעתק
     downloadBtn.style.display = 'block';
     downloadBtn.onclick = () => downloadTranscription(transcriptionData, audioFile.name);
 }
@@ -73,7 +73,6 @@ function loadTranscriptionToIframe(transcriptionData) {
     iframe.contentDocument.close();
 }
 
-
 function copyTranscription() {
     const iframe = document.getElementById('transcriptionIframe');
     iframe.contentWindow.document.execCommand("selectAll");
@@ -82,11 +81,9 @@ function copyTranscription() {
     const copyMessage = document.getElementById('copyMessage');
     copyMessage.style.display = 'inline';
 
-    // שינוי האייקון והטקסט לאחר העתקה
     const copyBtn = document.getElementById('copyBtn');
     copyBtn.innerHTML = '<i class="fas fa-check"></i> הועתק!';
 
-    // החזרת האייקון המקורי לאחר 3 שניות
     setTimeout(() => {
         copyMessage.style.display = 'none';
         copyBtn.innerHTML = '<i class="fas fa-copy"></i> העתק';
