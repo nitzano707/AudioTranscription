@@ -31,6 +31,7 @@ async function uploadAudio() {
     const responseDiv = document.getElementById('response');
     const audioFile = document.getElementById('audioFile').files[0];
     const downloadBtn = document.getElementById('downloadBtn');
+    const copyBtn = document.getElementById('copyBtn');
     const progressBar = document.getElementById('progressBar');
 
     if (!audioFile) {
@@ -40,6 +41,7 @@ async function uploadAudio() {
 
     responseDiv.textContent = 'מעבד את הבקשה...';
     downloadBtn.style.display = 'none';
+    copyBtn.style.display = 'none'; // הסתר את כפתור ההעתקה בתחילת התהליך
 
     const maxChunkSizeMB = 24;
     const maxChunkSizeBytes = maxChunkSizeMB * 1024 * 1024;
@@ -67,7 +69,24 @@ async function uploadAudio() {
     });
     responseDiv.innerHTML = htmlContent;
     downloadBtn.style.display = 'block';
+    copyBtn.style.display = 'inline-block'; // הצג את כפתור ההעתקה לאחר קבלת התמלול
     downloadBtn.onclick = () => downloadTranscription(transcriptionData, audioFile.name);
+}
+
+// פונקציה להעתקת התמלול ללוח
+function copyTranscription() {
+    const responseDiv = document.getElementById('response');
+    const copyMessage = document.getElementById('copyMessage');
+    
+    // יצירת טקסט להעתקה
+    const textToCopy = responseDiv.innerText;
+
+    navigator.clipboard.writeText(textToCopy).then(() => {
+        copyMessage.style.display = 'inline'; // הצגת הודעה שהתמלול הועתק
+        setTimeout(() => copyMessage.style.display = 'none', 2000); // הסתרת ההודעה לאחר 2 שניות
+    }).catch(err => {
+        console.error('שגיאה בהעתקה:', err);
+    });
 }
 
 async function splitAudioToChunksBySize(file, maxChunkSizeBytes) {
@@ -77,7 +96,7 @@ async function splitAudioToChunksBySize(file, maxChunkSizeBytes) {
 
     const sampleRate = audioBuffer.sampleRate;
     const numChannels = audioBuffer.numberOfChannels;
-    const chunkDuration = maxChunkSizeBytes / (sampleRate * numChannels * 2); // חישוב משך כל חלק בנתוני הקובץ
+    const chunkDuration = maxChunkSizeBytes / (sampleRate * numChannels * 2);
     let currentTime = 0;
     const chunks = [];
 
@@ -162,7 +181,7 @@ async function processAudioChunk(chunk, transcriptionData, currentChunk, totalCh
     formData.append('response_format', 'verbose_json');
     formData.append('language', 'he');
 
-    const apiKey = getApiKey(); // שליפת קוד ה-API מה-Local Storage
+    const apiKey = getApiKey();
 
     try {
         const response = await fetch('https://api.groq.com/openai/v1/audio/transcriptions', {
