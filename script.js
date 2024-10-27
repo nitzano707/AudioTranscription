@@ -15,26 +15,22 @@ async function uploadAudio() {
     downloadBtn.style.display = 'none';
     progressContainer.style.display = 'block';
 
-    const maxSizeMB = 25;
-    const maxSizeBytes = maxSizeMB * 1024 * 1024;
+    const maxChunkSizeMB = 24;
+    const maxChunkSizeBytes = maxChunkSizeMB * 1024 * 1024;
     let transcriptionData = [];
 
-    if (audioFile.size <= maxSizeBytes) {
-        await processAudioChunk(audioFile, transcriptionData, 1, 1, progressLabel, progressBar);
-    } else {
-        const chunks = await splitAndProcessAudio(audioFile, 5 * 60); // פיצול ל-5 דקות כדי להקטין גודל
-        const totalChunks = chunks.length;
+    const chunks = await splitAudioToChunksBySize(audioFile, maxChunkSizeBytes);
+    const totalChunks = chunks.length;
 
-        for (let i = 0; i < totalChunks; i++) {
-            const chunkFile = new File([chunks[i]], `chunk_${i + 1}.${audioFile.name.split('.').pop()}`, { type: audioFile.type });
-            
-            progressBar.value = (i / totalChunks) * 100;
-            progressLabel.textContent = `מעבד חלק ${i + 1} מתוך ${totalChunks}...`;
+    for (let i = 0; i < totalChunks; i++) {
+        const chunkFile = new File([chunks[i]], `chunk_${i + 1}.${audioFile.name.split('.').pop()}`, { type: audioFile.type });
+        
+        progressBar.value = (i / totalChunks) * 100;
+        progressLabel.textContent = `מעבד חלק ${i + 1} מתוך ${totalChunks}...`;
 
-            await processAudioChunk(chunkFile, transcriptionData, i + 1, totalChunks, progressLabel, progressBar);
+        await processAudioChunk(chunkFile, transcriptionData, i + 1, totalChunks, progressLabel, progressBar);
 
-            await new Promise(resolve => setTimeout(resolve, 500));
-        }
+        await new Promise(resolve => setTimeout(resolve, 500));
     }
 
     let htmlContent = '';
@@ -48,19 +44,19 @@ async function uploadAudio() {
     progressContainer.style.display = 'none';
 }
 
-async function splitAndProcessAudio(file, chunkDuration) {
+async function splitAudioToChunksBySize(file, maxChunkSizeBytes) {
     const audioContext = new (window.AudioContext || window.webkitAudioContext)();
     const arrayBuffer = await file.arrayBuffer();
     const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
 
-    const totalDuration = audioBuffer.duration;
     const sampleRate = audioBuffer.sampleRate;
     const numChannels = audioBuffer.numberOfChannels;
+    const chunkDuration = maxChunkSizeBytes / (sampleRate * numChannels * 2); // חישוב משך כל חלק בנתוני הקובץ
     let currentTime = 0;
     const chunks = [];
 
-    while (currentTime < totalDuration) {
-        const end = Math.min(currentTime + chunkDuration, totalDuration);
+    while (currentTime < audioBuffer.duration) {
+        const end = Math.min(currentTime + chunkDuration, audioBuffer.duration);
         const frameCount = Math.floor((end - currentTime) * sampleRate);
 
         const chunkBuffer = audioContext.createBuffer(numChannels, frameCount, sampleRate);
@@ -68,7 +64,7 @@ async function splitAndProcessAudio(file, chunkDuration) {
         for (let channel = 0; channel < numChannels; channel++) {
             const originalChannelData = audioBuffer.getChannelData(channel);
             const chunkChannelData = chunkBuffer.getChannelData(channel);
-            
+
             for (let i = 0; i < frameCount; i++) {
                 chunkChannelData[i] = originalChannelData[Math.floor(currentTime * sampleRate) + i];
             }
@@ -136,7 +132,6 @@ function bufferToWaveBlob(abuffer) {
 async function processAudioChunk(chunk, transcriptionData, currentChunk, totalChunks, progressLabel, progressBar) {
     const formData = new FormData();
     formData.append('file', chunk);
-
     formData.append('model', 'whisper-large-v3-turbo');
     formData.append('response_format', 'verbose_json');
     formData.append('language', 'he');
