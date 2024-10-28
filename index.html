@@ -17,7 +17,7 @@
     <input type="file" id="audioFile" accept=".mp3, .mp4, .mpeg, .mpga, .m4a, .wav, .webm" style="display:none;">
     <button id="customUploadBtn" onclick="triggerFileUpload()" title="קבצים מותרים: mp3, mp4, mpeg, mpga, m4a, wav, webm">העלה קובץ</button>
     <span id="fileName">לא נבחר קובץ</span>
-    <button onclick="uploadAudio()">העלה ותמלל</button>
+    <button id="uploadBtn" onclick="uploadAudio()" disabled>העלה ותמלל</button>
     <button onclick="downloadTranscription()" id="downloadBtn" style="display:none;">הורד תמלול כ-TXT</button>
 </div>
 
