@@ -1,6 +1,12 @@
 
 document.addEventListener('DOMContentLoaded', () => {
     const apiKey = localStorage.getItem('groqApiKey');
+
+    // הסתרת כל החלקים כברירת מחדל
+    document.getElementById('apiRequest').style.display = 'none';
+    document.getElementById('uploadSection').style.display = 'none';
+
+    // בדיקה אם קיים API key
     if (!apiKey) {
         document.getElementById('apiRequest').style.display = 'block';
     } else {
