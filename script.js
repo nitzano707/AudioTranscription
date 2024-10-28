@@ -23,6 +23,17 @@ function saveApiKey() {
     }
 }
 
+function triggerFileUpload() {
+    const audioFileInput = document.getElementById('audioFile');
+    audioFileInput.click();
+}
+
+// מאזין לאירוע שינוי ברכיב העלאת הקובץ כדי להציג את שם הקובץ שנבחר
+document.getElementById('audioFile').addEventListener('change', function () {
+    const fileName = this.files[0] ? this.files[0].name : "לא נבחר קובץ";
+    document.getElementById('fileName').textContent = fileName;
+});
+
 async function uploadAudio() {
     const responseDiv = document.getElementById('response');
     const audioFile = document.getElementById('audioFile').files[0];
