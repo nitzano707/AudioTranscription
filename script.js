@@ -14,6 +14,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+// האזנה לאירוע שינוי ברכיב העלאת הקובץ כדי להציג את שם הקובץ שנבחר ולעדכן את כפתור ההעלאה
+document.getElementById('audioFile').addEventListener('change', function () {
+    const fileName = this.files[0] ? this.files[0].name : "לא נבחר קובץ";
+    document.getElementById('fileName').textContent = fileName;
+
+    // עדכון מצב כפתור ההעלאה
+    const uploadBtn = document.getElementById('uploadBtn');
+    if (this.files[0]) {
+        uploadBtn.disabled = false;
+    } else {
+        uploadBtn.disabled = true;
+    }
+});
+
 function saveApiKey() {
     const apiKeyInput = document.getElementById('apiKeyInput').value;
     if (apiKeyInput) {
