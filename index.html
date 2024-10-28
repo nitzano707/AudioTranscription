@@ -8,16 +8,17 @@
 </head>
 <body>
     <h1>העלאת קובץ אודיו ותמלול לעברית</h1>
-    <div id="apiRequest">
-        <label for="apiKeyInput">הזן את ה-API מ-GROQ:</label>
-        <input type="text" id="apiKeyInput">
-        <button onclick="saveApiKey()">שמור</button>
-    </div>
-    <div id="uploadSection" style="display:none;">
-        <input type="file" id="audioFile" accept=".mp3, .mp4, .mpeg, .mpga, .m4a, .wav, .webm">
-        <button onclick="uploadAudio()">העלה ותמלל</button>
-        <button onclick="downloadTranscription()" id="downloadBtn" style="display:none;">הורד תמלול כ-TXT</button>
-    </div>
+   <div id="apiRequest" style="display:none;">
+    <label for="apiKeyInput">הזן את ה-API מ-GROQ:</label>
+    <input type="text" id="apiKeyInput">
+    <button onclick="saveApiKey()">שמור</button>
+</div>
+<div id="uploadSection" style="display:none;">
+    <label for="audioFile">בחר קובץ (mp3, mp4, mpeg, mpga, m4a, wav, webm):</label>
+    <input type="file" id="audioFile" accept=".mp3, .mp4, .mpeg, .mpga, .m4a, .wav, .webm">
+    <button onclick="uploadAudio()">העלה ותמלל</button>
+    <button onclick="downloadTranscription()" id="downloadBtn" style="display:none;">הורד תמלול כ-TXT</button>
+</div>
 
     <div id="progressSection" style="display:none;">
         <!-- רכיב הצגת התקדמות -->    
