@@ -29,12 +29,21 @@ button {
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s;
-    margin: 10px 0;
+    margin: 10px; /* עדכון - הוספת מרווח */
 }
 
 button:hover {
     background-color: #c0392b;
 }
+
+button:disabled {
+    background-color: #cccccc; /* צבע אפור שמציין שהכפתור לא זמין */
+    cursor: not-allowed; /* מציין שהכפתור לא לחיץ */
+    color: #666666; /* צבע טקסט מותאם */
+}
+
+
+
 
 /* כפתור ההורדה */
 #downloadBtn {
